@@ -48,7 +48,7 @@ function startGame() {
     playerDeck = new Deck(deck.cards.slice(0, deckMidPoint))
     computerDeck = new Deck(deck.cards.slice(deckMidPoint, deck.numberOfCards))
     inRound = false
-
+    console.log(playerDeck)
     cleanBeforeRound()
 }
 
@@ -81,8 +81,13 @@ function flipCards() {
         computerDeck.push(computerCard)
     } else {
         text.innerText = "Draw"
+        if (cardDraw() == 'player'){
         playerDeck.push(playerCard)
-        computerDeck.push(computerCard)
+        playerDeck.push(computerCard)
+        }else{
+            computerDeck.push(playerCard)
+            computerDeck.push(computerCard)
+        }
     }
     if (isGameOver(playerDeck)) {
         text.innerText = "You Lose!!"
@@ -92,6 +97,40 @@ function flipCards() {
         stop = true
     }
 
+
+    console.log(playerDeck.cards[3])
+}
+
+function cardDraw(num = 3) {
+    flipCardWar(num)
+    if(isRoundWinner(playerDeck.cards[num], computerDeck.cards[num])){
+        text.innerText = 'Win'
+        
+        for(let i = 0; i <= num ; i++){
+            playerDeck.push(computerDeck.cards[i])
+            computerDeck.pop()
+        }
+        return 'player'
+    }else if (isRoundWinner(computerDeck.cards[num], playerDeck.cards[num])) {
+        text.innerText = 'loose'
+        
+        for (let i = 0; i <= num; i++){
+            computerDeck.push(playerDeck.cards[i])
+            playerDeck.pop()
+        }
+    } else {
+        text.innerText = 'draw'
+        num+=3
+        cardDraw(num)
+    }
+}
+
+function flipCardWar(num) {
+    for(let i = 0; i <= num; i++){
+
+        playerCardSlot.appendChild(playerDeck.cards[i].getHTML())
+        computerCardSlot.appendChild(computerDeck.cards[i].getHTML())
+    }
 
 }
 
